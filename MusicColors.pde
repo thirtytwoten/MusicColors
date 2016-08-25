@@ -17,7 +17,7 @@ void setup()
 {
   size(800, 800);
   frameRate(60);
-  colorMode(HSB, 360, 100, 100, 120);
+  colorMode(HSB, 360, 100, 100, 100);
   
   calcFreqs();
   minim = new Minim(this);
@@ -44,18 +44,21 @@ void draw()
   {
     float freq = freqs[i];
     float amp = fft.getBand(i);
-    //println(freq + ": " + amp);
-    if (amp > 1) {
+    println(freq + ": " + amp);
+    if (amp > 0.1) {
       float theta = calcTheta(freq);
       float radius = center - 10;
       float hue = degrees(theta) % 360;
+      float saturation = 100;
+      float brightness = 50 + 10 * theta/TWO_PI;
+      float alpha = amp;
       if (hue < 0) {
        hue = hue + 360; 
       }
-      stroke(hue, 100, 50 + 10 * theta/TWO_PI, amp / 3);
-      fill(hue, 100, 50 + 10 * theta/TWO_PI, amp * 6);
+      stroke(hue, saturation, brightness, alpha);
+      fill(hue, saturation, brightness, alpha);
       drawRadial(theta, radius);
-      drawPoint(theta, radius, amp);
+      drawDot(theta, amp);
       if ( i > band440) {
           x = i / band440; 
       }
@@ -63,11 +66,12 @@ void draw()
   }
 }
 
-void drawPoint(float theta, float radius, float band) {
-   float x = (radius/2 + 40 * theta/TWO_PI) * cos(theta);
-   float y = (radius/2 + 40 * theta/TWO_PI)  * sin(theta);
-   float s = map(band, 1, 200, 1, 7);
-   ellipse(center + x, center + y, s, s);
+void drawDot(float theta, float amp) {
+   float radius = (150 + 50 * theta/TWO_PI);
+   float x = radius * cos(theta);
+   float y = radius * sin(theta);
+   float dotRadius = sqrt(amp);//map(amp, 1, 200, 1, 7);
+   ellipse(center + x, center + y, dotRadius, dotRadius);
 }
 
 void drawRadial(float theta, float radius) {
