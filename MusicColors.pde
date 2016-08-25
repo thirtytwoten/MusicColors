@@ -8,7 +8,7 @@ FFT         fft2;
 
 float a4 = 440.0;
 int samplingRate = 44100;
-int timeDomain = 4096 * 4;
+int timeDomain = 4096;
 float[] freqs;
 int sideLength = 800;
 int center = sideLength/2;
@@ -22,8 +22,8 @@ void setup()
   
   calcFreqs();
   minim = new Minim(this);
-  song = minim.loadFile("track1.mp3", timeDomain);
-  song.loop();
+  song = minim.loadFile("cdl.mp3", timeDomain);
+  song.play();
   // create an FFT object that has a time-domain buffer 
   // the same size as song's sample buffer
   // note that this needs to be a power of two 
@@ -31,23 +31,24 @@ void setup()
   //println("song.bufferSize(): " + song.bufferSize());
   //println("song.sampleRate(): " + song.sampleRate());
   fft = new FFT( song.bufferSize(), song.sampleRate() );
-  fft2 = new FFT( song.bufferSize(), song.sampleRate() );
+  //fft2 = new FFT( song.bufferSize(), song.sampleRate() );
+  //fft2.logAverages(1, 48);
 }
 
 void draw()
 {
-  fill(0,0,0,60);
+  fill(0,0,0,100);
   rect(0,0,width, height);
   fft.forward( song.mix );
   
   int x = 1;
-  int band440 = fft.freqToIndex(440.0);
-  for(int i = 0; i < fft.specSize() && i % x == 0; i++)
+  int band440 = fft.freqToIndex(880.0);//fft.freqToIndex(440.0);
+  for(int i = 0; i < freqs.length && i % x == 0; i++)
   {
     float freq = freqs[i];
     float amp = fft.getBand(i);
-    println(freq + ": " + amp);
-    if (amp > 0.1) {
+    //println(freq + ": " + amp);
+    if (amp > 1) {
       float theta = calcTheta(freq);
       float radius = center - 10;
       float hue = degrees(theta) % 360;
@@ -62,7 +63,8 @@ void draw()
       drawRadial(theta, radius);
       drawDot(theta, amp);
       if ( i > band440) {
-          x = i / band440; 
+          x = i / band440;
+          //x = 1;
       }
     }
   }
@@ -95,9 +97,12 @@ void drawRadial(float theta, float radius) {
 // centered on 5/1024 * 44100 = 0.0048828125 * 44100 = 215 Hz.
 //
 void calcFreqs() {
- freqs = new float[timeDomain];
- for (int i = 0; i < timeDomain; i++) {
-   freqs[i] = i * samplingRate / timeDomain;
+ float step = samplingRate / timeDomain;
+ float maxFreq = samplingRate / 2;
+ int bands = int(maxFreq / step);
+ freqs = new float[bands];
+ for (int i = 0; i < freqs.length; i++) {
+   freqs[i] = i * step;
    //println("freq[" + i + "]: " + freqs[i]);
  }
 }
