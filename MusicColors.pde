@@ -4,6 +4,7 @@ import ddf.minim.*;
 Minim       minim;
 AudioPlayer song;
 FFT         fft;
+FFT         fft2;
 
 float a4 = 440.0;
 int samplingRate = 44100;
@@ -30,6 +31,7 @@ void setup()
   //println("song.bufferSize(): " + song.bufferSize());
   //println("song.sampleRate(): " + song.sampleRate());
   fft = new FFT( song.bufferSize(), song.sampleRate() );
+  fft2 = new FFT( song.bufferSize(), song.sampleRate() );
 }
 
 void draw()
