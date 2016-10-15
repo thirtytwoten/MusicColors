@@ -54,7 +54,7 @@ void draw()
       float hue = degrees(theta) % 360;
       float saturation = 100;
       float brightness = 50 + 10 * theta/TWO_PI;
-      float alpha = amp;
+      float alpha = amp * 0.8;
       if (hue < 0) {
        hue = hue + 360; 
       }
