@@ -22,7 +22,7 @@ void setup()
   
   calcFreqs();
   minim = new Minim(this);
-  song = minim.loadFile("cdl.mp3", timeDomain);
+  song = minim.loadFile("cMajorScale.mp3", timeDomain);
   song.play();
   // create an FFT object that has a time-domain buffer 
   // the same size as song's sample buffer
