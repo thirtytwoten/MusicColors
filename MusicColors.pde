@@ -4,9 +4,8 @@ import ddf.minim.*;
 Minim       minim;
 AudioPlayer song;
 FFT         fft;
-FFT         fft2;
 
-float a4 = 440.0;
+float baseFrequency = 391.995; // G4
 int samplingRate = 44100;
 int timeDomain = 4096;
 float[] freqs;
@@ -31,8 +30,6 @@ void setup()
   //println("song.bufferSize(): " + song.bufferSize());
   //println("song.sampleRate(): " + song.sampleRate());
   fft = new FFT( song.bufferSize(), song.sampleRate() );
-  //fft2 = new FFT( song.bufferSize(), song.sampleRate() );
-  //fft2.logAverages(1, 48);
 }
 
 void draw()
@@ -108,7 +105,7 @@ void calcFreqs() {
 }
 
 float calcTheta(float freq) {
-  float n = log(freq/a4) / log( pow(2, 1/12.0) );  // amount of twelth steps around circle
+  float n = log(freq/baseFrequency) / log( pow(2, 1/12.0) );  // amount of twelth steps around circle
   float theta = n/12.0 * TWO_PI;
   return theta;
 }
